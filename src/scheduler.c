@@ -49,13 +49,13 @@ void printProcessSpecifics(process_t process_list[], scheduler_result_t result)
     printf("\n");
     for (; i < result.total_created_processes; ++i)
     {
-        printf("Process %i:\n", process_list[i].processID);
+        printf("Process %i:\n", process_list[i].id);
         printf("\t(A,B,C,M) = (%i,%i,%i,%i)\n", process_list[i].A, process_list[i].B,
                process_list[i].C, process_list[i].M);
-        printf("\tFinishing time: %i\n", process_list[i].finishingTime);
-        printf("\tTurnaround time: %i\n", process_list[i].finishingTime - process_list[i].A);
-        printf("\tI/O time: %i\n", process_list[i].currentIOBlockedTime);
-        printf("\tWaiting time: %i\n", process_list[i].currentWaitingTime);
+        printf("\tFinishing time: %i\n", process_list[i].finished_time);
+        printf("\tTurnaround time: %i\n", process_list[i].finished_time - process_list[i].A);
+        printf("\tI/O time: %i\n", process_list[i].blocked_time);
+        printf("\tWaiting time: %i\n", process_list[i].waiting_time);
         printf("\n");
     }
 } // End of the print process specifics function
@@ -74,10 +74,10 @@ void printSummaryData(process_t process_list[], scheduler_result_t result)
     uint32_t final_finishing_time = result.current_cycle - 1;
     for (; i < result.total_created_processes; ++i)
     {
-        total_amount_of_time_utilizing_cpu += process_list[i].currentCPUTimeRun;
-        total_amount_of_time_io_blocked += process_list[i].currentIOBlockedTime;
-        total_amount_of_time_spent_waiting += process_list[i].currentWaitingTime;
-        total_turnaround_time += (process_list[i].finishingTime - process_list[i].A);
+        total_amount_of_time_utilizing_cpu += process_list[i].cpu_time;
+        total_amount_of_time_io_blocked += process_list[i].blocked_time;
+        total_amount_of_time_spent_waiting += process_list[i].waiting_time;
+        total_turnaround_time += (process_list[i].finished_time - process_list[i].A);
     }
 
     // Calculates the CPU utilisation
@@ -126,7 +126,7 @@ void read_processes(FILE *f, process_t *process_list, uint32_t total_num_of_proc
                              &process_list[i].M);
 
         assert(scanned == 4);
-        process_list[i].processID = i;
+        process_list[i].id = i;
     }
 }
 
@@ -154,8 +154,8 @@ int main(int argc, char *argv[])
     // #endregion READ_PROCESSES
 
     fcfs(process_list, total_num_of_process);
-
     sjf(process_list, total_num_of_process);
+    rr(process_list, total_num_of_process, 2);
 
     fclose(f);
     return 0;
