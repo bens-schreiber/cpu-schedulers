@@ -9,12 +9,12 @@
  * Prints to standard output the original input
  * process_list is the original processes inputted (in array form)
  */
-void printStart(process_t process_list[], scheduler_result_t result)
+void printStart(process_t process_list[], uint32_t size)
 {
-    printf("The original input was: %i", result.total_created_processes);
+    printf("The original input was: %i", size);
 
     uint32_t i = 0;
-    for (; i < result.total_created_processes; ++i)
+    for (; i < size; ++i)
     {
         printf(" ( %i %i %i %i)", process_list[i].A, process_list[i].B,
                process_list[i].C, process_list[i].M);
@@ -104,18 +104,19 @@ void printSummaryData(process_t process_list[], scheduler_result_t result)
     printf("\tAverage waiting time: %6f\n", avg_waiting_time);
 } // End of the print summary data function
 
-void out(process_t *process_list, scheduler_result_t result, char scheduler[0xFF])
+void out(process_t *process_list, uint32_t size, char scheduler[0xFF], scheduler_result_t (*f)(process_t *, uint32_t))
 {
+    process_t *cpy = malloc(sizeof(process_t) * size);
+    memcpy(cpy, process_list, sizeof(process_t) * size);
 
-    process_t *cpy = malloc(sizeof(process_t) * result.total_created_processes);
-    memcpy(cpy, process_list, sizeof(process_t) * result.total_created_processes);
+    printf("\n\n*** %s ***:\n", scheduler);
+    printStart(cpy, size);
 
-    printf("*** %s ***:\n", scheduler);
-    printStart(cpy, result);
+    scheduler_result_t result = f(cpy, size);
     printFinal(cpy, result);
+
     printProcessSpecifics(cpy, result);
     printSummaryData(cpy, result);
-    printf("\n\n");
 }
 
 /// The first number in the file is the total number of processes
@@ -146,6 +147,11 @@ void read_processes(FILE *f, process_t *process_list, uint32_t total_num_of_proc
     }
 }
 
+scheduler_result_t _rr(process_t *processes, uint32_t size)
+{
+    return rr(processes, size, 2);
+}
+
 int main(int argc, char *argv[])
 {
     // #region OPEN_FILE
@@ -170,16 +176,9 @@ int main(int argc, char *argv[])
     // #endregion READ_PROCESSES
 
     // #region SCHEDULERS
-    scheduler_result_t r;
-
-    // r = fcfs(process_list, total_num_of_process);
-    // out(process_list, r, "FCFS");
-
-    // r = sjf(process_list, total_num_of_process);
-    // out(process_list, r, "SJF");
-
-    r = rr(process_list, total_num_of_process, 2);
-    out(process_list, r, "RR");
+    out(process_list, total_num_of_process, "FCFS", fcfs);
+    out(process_list, total_num_of_process, "SJF", sjf);
+    out(process_list, total_num_of_process, "RR", _rr);
     // #endregion SCHEDULERS
 
     fclose(f);
