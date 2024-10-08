@@ -104,7 +104,7 @@ void printSummaryData(process_t process_list[], scheduler_result_t result)
     printf("\tAverage waiting time: %6f\n", avg_waiting_time);
 } // End of the print summary data function
 
-void out(process_t *process_list, uint32_t size, char scheduler[0xFF], scheduler_result_t (*f)(process_t *, uint32_t))
+void out(process_t *process_list, uint32_t size, char scheduler[3], scheduler_result_t (*f)(process_t *, uint32_t))
 {
     process_t *cpy = malloc(sizeof(process_t) * size);
     memcpy(cpy, process_list, sizeof(process_t) * size);
@@ -178,7 +178,7 @@ int main(int argc, char *argv[])
     // #region SCHEDULERS
     out(process_list, total_num_of_process, "FCFS", fcfs);
     out(process_list, total_num_of_process, "SJF", sjf);
-    out(process_list, total_num_of_process, "RR", _rr);
+    out(process_list, total_num_of_process, "RR ", _rr);
     // #endregion SCHEDULERS
 
     fclose(f);
