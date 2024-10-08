@@ -153,9 +153,9 @@ int main(int argc, char *argv[])
     read_processes(f, process_list, total_num_of_process);
     // #endregion READ_PROCESSES
 
-    qsort(process_list, total_num_of_process, sizeof(process_t), cmpr_process);
-
     fcfs(process_list, total_num_of_process);
+
+    sjf(process_list, total_num_of_process);
 
     fclose(f);
     return 0;

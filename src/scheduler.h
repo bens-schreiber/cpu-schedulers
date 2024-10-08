@@ -40,20 +40,12 @@ typedef struct _process
     struct _process *nextInReadySuspendedQueue; // A pointer to the next process available in the ready suspended queue
 } process_t;
 
-int cmpr_process(process_t *a, process_t *b)
+int cmpr_process_a(const void *a, const void *b)
 {
-    if (a->A < b->A)
-    {
-        return -1;
-    }
-    else if (a->A > b->A)
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
+    process_t *pa = (process_t *)a;
+    process_t *pb = (process_t *)b;
+
+    return pa->A - pb->A;
 }
 
 typedef struct
@@ -72,11 +64,18 @@ static void set_bursts(process_t *p)
     p->IOBurst = p->CPUBurst * p->M;
 }
 
+/// @brief Iterate through an array in a circular fashion, ie the tail overflows back to the head.
+///
+/// Starts from location memory_offset
+#define circular_iterator(memory_head, memory_offset, i, total_memory) &memory_head[((memory_offset - memory_head) + i) % total_memory]
+
+#define min(a, b) ((a) < (b) ? (a) : (b))
+
 /// @brief  Non-premptive First-Come-First-Serve (FCFS) Scheduler
-/// @param processes t A list of processes sorted by A (arrival time)
-/// @param total_num_of_process The total number of processes
 scheduler_result_t fcfs(process_t *processes, uint32_t total_num_of_process)
 {
+    qsort(processes, total_num_of_process, sizeof(process_t), cmpr_process_a);
+
     scheduler_result_t r = {0}; // Result of the scheduler
     process_t *rp = NULL;       // Running process
     process_t *p = NULL;        // Process
@@ -86,7 +85,7 @@ scheduler_result_t fcfs(process_t *processes, uint32_t total_num_of_process)
         const process_t *mo = rp == NULL ? processes : rp;
         for (int i = 0; i < total_num_of_process; i++)
         {
-            p = &processes[((mo - processes) + i) % total_num_of_process]; // magic
+            p = circular_iterator(processes, mo, i, total_num_of_process);
 
             // Terminated
             if (p->status == TERMINATED)
@@ -131,11 +130,110 @@ scheduler_result_t fcfs(process_t *processes, uint32_t total_num_of_process)
                     rp = p;
                 }
 
-                // Because of the circular loop (magic) this will always be the next ready process relative to rp
+                // Because of the circular loop (magic) this will always be the first served
                 else if (rp->nextInReadyQueue == NULL)
                 {
                     rp->nextInReadyQueue = p;
                 }
+
+                // Wait
+                p->currentWaitingTime++;
+            }
+
+            // Running
+            else if (p->status == RUNNING)
+            {
+                p->currentCPUTimeRun++;
+                p->CPUBurst--;
+                r.total_started_processes += p->isFirstTimeRunning;
+                p->isFirstTimeRunning = false;
+
+                // Running -> Terminate
+                if (p->currentCPUTimeRun == p->C)
+                {
+                    rp = NULL;
+                    p->status = TERMINATED;
+                    p->finishingTime = r.current_cycle;
+                    p = p->nextInReadyQueue;
+
+                    r.total_finished_processes++;
+                }
+
+                // Running -> Block
+                else if (p->CPUBurst == 0)
+                {
+                    rp = NULL;
+                    p->status = BLOCKED;
+                    p = p->nextInReadyQueue;
+                }
+            }
+        }
+
+        r.current_cycle++;
+    }
+    return r;
+}
+
+/// @brief Non-premptive Shortest Job First (SJF) Scheduler
+scheduler_result_t sjf(process_t *processes, uint32_t total_num_of_process)
+{
+    qsort(processes, total_num_of_process, sizeof(process_t), cmpr_process_a);
+
+    scheduler_result_t r = {0}; // Result of the scheduler
+    process_t *rp = NULL;       // Running process
+    process_t *p = NULL;
+
+    while (r.total_finished_processes < total_num_of_process)
+    {
+        for (int i = 0; i < total_num_of_process; i++)
+        {
+            p = &processes[i];
+
+            // Terminated
+            if (p->status == TERMINATED)
+            {
+                continue;
+            }
+
+            // Blocked
+            if (p->status == BLOCKED)
+            {
+                p->currentIOBlockedTime++;
+                p->IOBurst--;
+
+                // Blocked -> Ready
+                p->status = p->IOBurst ? BLOCKED : READY;
+
+                r.total_number_of_cycles_spent_blocked++;
+            }
+
+            // Unstarted -> Ready
+            else if (p->status == UNSTARTED && p->A == r.current_cycle)
+            {
+                p->currentCPUTimeRun = 0;
+                p->currentIOBlockedTime = 0;
+                p->currentWaitingTime = 0;
+                p->isFirstTimeRunning = true;
+
+                p->status = READY;
+
+                r.total_created_processes++;
+            }
+
+            // Ready
+            if (p->status == READY)
+            {
+                // Ready -> Running
+                if (rp == NULL)
+                {
+                    p->nextInReadyQueue = NULL;
+                    set_bursts(p);
+                    p->status = RUNNING;
+                    rp = p;
+                }
+
+                // Shortest job first
+                rp->nextInReadyQueue = min(rp->nextInReadyQueue, p);
 
                 // Wait
                 p->currentWaitingTime++;
