@@ -10,7 +10,6 @@ void assert_result(scheduler_result_t got, scheduler_result_t expected)
     assert(got.total_created_processes == expected.total_created_processes);
     assert(got.total_started_processes == expected.total_started_processes);
     assert(got.total_finished_processes == expected.total_finished_processes);
-    // assert(got.total_number_of_cycles_spent_blocked == expected.total_number_of_cycles_spent_blocked);
 }
 
 /**
@@ -47,7 +46,6 @@ void test_fcfs_input1()
         .total_created_processes = 1,
         .total_started_processes = 1,
         .total_finished_processes = 1,
-        .total_number_of_cycles_spent_blocked = -1,
     };
 
     assert_result(result, expected);
@@ -86,7 +84,6 @@ void test_fcfs_input2()
         .total_created_processes = 2,
         .total_started_processes = 2,
         .total_finished_processes = 2,
-        .total_number_of_cycles_spent_blocked = -1,
     };
 
     assert_result(result, expected);
@@ -130,7 +127,6 @@ void test_fcfs_input3()
         .total_created_processes = 3,
         .total_started_processes = 3,
         .total_finished_processes = 3,
-        .total_number_of_cycles_spent_blocked = -1,
     };
 
     assert_result(result, expected);
@@ -170,7 +166,7 @@ void test_sjf_input1()
         .total_created_processes = 1,
         .total_started_processes = 1,
         .total_finished_processes = 1,
-        .total_number_of_cycles_spent_blocked = -1,
+
     };
 
     assert_result(result, expected);
@@ -209,7 +205,7 @@ void test_sjf_input2()
         .total_created_processes = 2,
         .total_started_processes = 2,
         .total_finished_processes = 2,
-        .total_number_of_cycles_spent_blocked = -1,
+
     };
 
     assert_result(result, expected);
@@ -253,7 +249,7 @@ void test_sjf_input3()
         .total_created_processes = 3,
         .total_started_processes = 3,
         .total_finished_processes = 3,
-        .total_number_of_cycles_spent_blocked = -1,
+
     };
 
     assert_result(result, expected);
@@ -290,7 +286,7 @@ void test_rr_input1()
         .total_created_processes = 1,
         .total_started_processes = 1,
         .total_finished_processes = 1,
-        .total_number_of_cycles_spent_blocked = -1,
+
     };
 
     assert_result(result, expected);
@@ -329,7 +325,7 @@ void test_rr_input2()
         .total_created_processes = 2,
         .total_started_processes = 2,
         .total_finished_processes = 2,
-        .total_number_of_cycles_spent_blocked = -1,
+
     };
 
     assert_result(result, expected);
@@ -373,7 +369,7 @@ void test_rr_input3()
         .total_created_processes = 3,
         .total_started_processes = 3,
         .total_finished_processes = 3,
-        .total_number_of_cycles_spent_blocked = -1,
+
     };
 
     assert_result(result, expected);

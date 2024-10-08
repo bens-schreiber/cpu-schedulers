@@ -3,8 +3,8 @@
 #include <stdio.h>
 #include <assert.h>
 
-const char *RANDOM_NUMBER_FILE_NAME = "../random-numbers";
-const uint32_t SEED_VALUE = 200; // Seed value for reading from file
+const char *RANDOM_NUMBER_FILE_NAME = "./random-numbers"; // File name for random numbers
+const uint32_t SEED_VALUE = 200;                          // Seed value for reading from file
 
 // Additional variables as needed
 

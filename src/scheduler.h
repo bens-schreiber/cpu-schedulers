@@ -122,9 +122,10 @@ scheduler_result_t fcfs(process_t *processes, uint32_t total_num_of_process)
                     p->status = RUNNING;
                     rp = p;
                 }
-
-                // Wait
-                p->waiting_time++;
+                else
+                {
+                    p->waiting_time++;
+                }
             }
 
             // Running
@@ -243,6 +244,7 @@ scheduler_result_t sjf(process_t *processes, uint32_t total_num_of_process)
         {
             set_bursts(sj);
             sj->status = RUNNING;
+            sj->waiting_time--;
         }
 
         r.current_cycle++;
@@ -308,9 +310,10 @@ scheduler_result_t rr(process_t *processes, uint32_t total_num_of_process, uint8
                     p->status = RUNNING;
                     rp = p;
                 }
-
-                // Wait
-                p->waiting_time++;
+                else
+                {
+                    p->waiting_time++;
+                }
             }
 
             // Running

@@ -1,0 +1,23 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/benjaminschreiber/projects/pa-2-bens-schreiber/src/scheduler'
+relocations:
+  - { offsetInCU: 0x26, offset: 0x26, size: 0x8, addend: 0x0, symName: _getRandNumFromFile, symObjAddr: 0x0, symBinAddr: 0x100002448, symSize: 0x10C }
+  - { offsetInCU: 0x4D, offset: 0x4D, size: 0x8, addend: 0x0, symName: _RANDOM_NUMBER_FILE_NAME, symObjAddr: 0x1AA8, symBinAddr: 0x100008000, symSize: 0x0 }
+  - { offsetInCU: 0x6C, offset: 0x6C, size: 0x8, addend: 0x0, symName: _SEED_VALUE, symObjAddr: 0x1AB0, symBinAddr: 0x100003D28, symSize: 0x0 }
+  - { offsetInCU: 0x180, offset: 0x180, size: 0x8, addend: 0x0, symName: _getRandNumFromFile, symObjAddr: 0x0, symBinAddr: 0x100002448, symSize: 0x10C }
+  - { offsetInCU: 0x1E0, offset: 0x1E0, size: 0x8, addend: 0x0, symName: _randomOS, symObjAddr: 0x10C, symBinAddr: 0x100002554, symSize: 0x108 }
+  - { offsetInCU: 0x24E, offset: 0x24E, size: 0x8, addend: 0x0, symName: _cmpr_process_a, symObjAddr: 0x214, symBinAddr: 0x10000265C, symSize: 0x38 }
+  - { offsetInCU: 0x2A0, offset: 0x2A0, size: 0x8, addend: 0x0, symName: _fcfs, symObjAddr: 0x24C, symBinAddr: 0x100002694, symSize: 0x388 }
+  - { offsetInCU: 0x339, offset: 0x339, size: 0x8, addend: 0x0, symName: _set_bursts, symObjAddr: 0x5D4, symBinAddr: 0x100002A1C, symSize: 0x58 }
+  - { offsetInCU: 0x35D, offset: 0x35D, size: 0x8, addend: 0x0, symName: _sjf, symObjAddr: 0x62C, symBinAddr: 0x100002A74, symSize: 0x39C }
+  - { offsetInCU: 0x3E8, offset: 0x3E8, size: 0x8, addend: 0x0, symName: _rr, symObjAddr: 0x9C8, symBinAddr: 0x100002E10, symSize: 0x374 }
+  - { offsetInCU: 0x494, offset: 0x494, size: 0x8, addend: 0x0, symName: _printStart, symObjAddr: 0xD3C, symBinAddr: 0x100003184, symSize: 0x108 }
+  - { offsetInCU: 0x4D5, offset: 0x4D5, size: 0x8, addend: 0x0, symName: _printFinal, symObjAddr: 0xE44, symBinAddr: 0x10000328C, symSize: 0x108 }
+  - { offsetInCU: 0x516, offset: 0x516, size: 0x8, addend: 0x0, symName: _printProcessSpecifics, symObjAddr: 0xF4C, symBinAddr: 0x100003394, symSize: 0x1FC }
+  - { offsetInCU: 0x557, offset: 0x557, size: 0x8, addend: 0x0, symName: _printSummaryData, symObjAddr: 0x1148, symBinAddr: 0x100003590, symSize: 0x274 }
+  - { offsetInCU: 0x624, offset: 0x624, size: 0x8, addend: 0x0, symName: _out, symObjAddr: 0x13BC, symBinAddr: 0x100003804, symSize: 0x10C }
+  - { offsetInCU: 0x673, offset: 0x673, size: 0x8, addend: 0x0, symName: _read_process_amount, symObjAddr: 0x14C8, symBinAddr: 0x100003910, symSize: 0x80 }
+  - { offsetInCU: 0x6A9, offset: 0x6A9, size: 0x8, addend: 0x0, symName: _read_processes, symObjAddr: 0x1548, symBinAddr: 0x100003990, symSize: 0x188 }
+  - { offsetInCU: 0x730, offset: 0x730, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x16D0, symBinAddr: 0x100003B18, symSize: 0x160 }
+...

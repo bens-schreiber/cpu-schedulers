@@ -1,6 +1,6 @@
 #include <assert.h>
+#include <string.h>
 
-#include "random.h"
 #include "scheduler.h"
 
 /********************* SOME PRINTING HELPERS *********************/
@@ -104,6 +104,20 @@ void printSummaryData(process_t process_list[], scheduler_result_t result)
     printf("\tAverage waiting time: %6f\n", avg_waiting_time);
 } // End of the print summary data function
 
+void out(process_t *process_list, scheduler_result_t result, char scheduler[0xFF])
+{
+
+    process_t *cpy = malloc(sizeof(process_t) * result.total_created_processes);
+    memcpy(cpy, process_list, sizeof(process_t) * result.total_created_processes);
+
+    printf("*** %s ***:\n", scheduler);
+    printStart(cpy, result);
+    printFinal(cpy, result);
+    printProcessSpecifics(cpy, result);
+    printSummaryData(cpy, result);
+    printf("\n\n");
+}
+
 /// The first number in the file is the total number of processes
 /// Panics if the file is not formatted correctly
 uint32_t read_process_amount(FILE *f)
@@ -119,10 +133,12 @@ void read_processes(FILE *f, process_t *process_list, uint32_t total_num_of_proc
 {
     for (uint32_t i = 0; i < total_num_of_process; ++i)
     {
-        int scanned = fscanf(f, "%u (%u %u %u)",
+        process_list[i] = (process_t){0};
+        int scanned = fscanf(f, " (%u %u %u %u)",
                              &process_list[i].A,
                              &process_list[i].B,
                              &process_list[i].C,
+
                              &process_list[i].M);
 
         assert(scanned == 4);
@@ -153,9 +169,18 @@ int main(int argc, char *argv[])
     read_processes(f, process_list, total_num_of_process);
     // #endregion READ_PROCESSES
 
-    fcfs(process_list, total_num_of_process);
-    sjf(process_list, total_num_of_process);
-    rr(process_list, total_num_of_process, 2);
+    // #region SCHEDULERS
+    scheduler_result_t r;
+
+    // r = fcfs(process_list, total_num_of_process);
+    // out(process_list, r, "FCFS");
+
+    // r = sjf(process_list, total_num_of_process);
+    // out(process_list, r, "SJF");
+
+    r = rr(process_list, total_num_of_process, 2);
+    out(process_list, r, "RR");
+    // #endregion SCHEDULERS
 
     fclose(f);
     return 0;
